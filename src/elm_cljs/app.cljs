@@ -1,6 +1,6 @@
 (ns elm-cljs.app
   (:require [elm-cljs.core :refer [main submit]]
-            [elm-cljs.effects :refer [->Random]]
+            [elm-cljs.effects :refer [->Random ->Fetch]]
             [quiescent.dom :as d]))
 
 (enable-console-print!)
@@ -11,7 +11,7 @@
             :loading false
             :text "???"})
 
-;; --- Actions ------------------------------------------------
+;; --- Messages ------------------------------------------------
 
 (defrecord Increment [])
 
@@ -21,31 +21,56 @@
 
 (defrecord GenerateRandom [])
 
-(defrecord Type [text])
+(defrecord FetchData [])
+
+(defrecord DataFetched [value])
+
+(defrecord SetText [text])
 
 ;; --- Update ------------------------------------------------
 
-(defmulti update-state (fn [model message] (type message)))
+(defmulti update-model (fn [model message] (type message)))
 
-(defmethod update-state Increment [model message]
+(defmethod update-model Increment [model message]
   [(update model :counter inc) nil])
 
-(defmethod update-state Decrement [model message]
+(defmethod update-model Decrement [model message]
   [(update model :counter dec) nil])
 
-(defmethod update-state SetCounter [model message]
+(defmethod update-model SetCounter [model message]
   [(assoc model :counter (:value message)) nil])
 
-(defmethod update-state GenerateRandom [model message]
+(defmethod update-model GenerateRandom [model message]
   [model (->Random 50 ->SetCounter)])
 
-(defmethod update-state Type [model message]
+(defmethod update-model FetchData [model message]
+  [(assoc model :loading true)
+   (->Fetch "http://some.url.com" ->DataFetched)])
+
+(defmethod update-model DataFetched [model message]
+  [(assoc model :loading false :text (:value message)) nil])
+
+(defmethod update-model SetText [model message]
   [(assoc model :text (:text message)) nil])
 
-(defmethod update-state :default [model message]
+(defmethod update-model :default [model message]
   [model nil])
 
 ;; --- View ------------------------------------------------
+
+(defn view- [model]
+  [:div {}
+   [:p {}
+    [:button {:onClick ->Decrement} "-"]
+    (:counter model)
+    [:button {:onClick ->Increment} "+"]]
+   [:p {}
+    [:button {:onClick ->GenerateRandom} "Random"]
+    [:button {:onClick ->FetchData} "FetchData"]]
+   (if (:loading model) [:h1 {} "Loading..."])
+   [:p {}
+    [:input {:onChange (fn [e] (->SetText (-> e .-target .-value)))
+             :value (:text model)}]]])
 
 (defn view [model]
   (d/div {}
@@ -54,13 +79,14 @@
               (:counter model)
               (d/button {:onClick (fn [e] (submit (->Increment)))} "+"))
          (d/p {} (d/button {:onClick (fn [e] (submit (->GenerateRandom)))} "Random"))
+         (d/p {} (d/button {:onClick (fn [e] (submit (->FetchData)))} "Fetch data"))
+         (if (:loading model) (d/h1 {} "Loading..."))
          (d/p {}
-              (d/input {:onChange (fn [e] (let [value (-> e (.-target) (.-value))]
-                                            (submit (->Type value))))
+              (d/input {:onChange (fn [e] (submit (->SetText (-> e .-target .-value))))
                         :value    (:text model)}))))
 
 ;; --- Main ------------------------------------------------
 
 (def root (.getElementById js/document "app"))
 
-(main model view update-state root)
+(main model view update-model root)
