@@ -13,36 +13,37 @@
 
 ;; --- Actions ------------------------------------------------
 
-(defprotocol Action
-  (run [this model]))
+(defrecord Increment [])
 
-(defrecord Increment []
-  Action
-  (run [this model]
-    [(update model :counter inc) nil]))
+(defrecord Decrement [])
 
-(defrecord Decrement []
-  Action
-  (run [this model]
-    [(update model :counter dec) nil]))
+(defrecord SetCounter [value])
 
-(defrecord SetCounter [value]
-  Action
-  (run [this model]
-    [(assoc model :counter value) nil]))
+(defrecord GenerateRandom [])
 
-(defrecord GenerateRandom []
-  Action
-  (run [this model]
-    [model (->Random 50 ->SetCounter)]))
+(defrecord Type [text])
 
-(defrecord Type [text]
-  Action
-  (run [this model]
-    [(assoc model :text (:text this)) nil]))
+;; --- Update ------------------------------------------------
 
-(defn update [model message]
-  (run message model))
+(defmulti update-state (fn [model message] (type message)))
+
+(defmethod update-state Increment [model message]
+  [(update model :counter inc) nil])
+
+(defmethod update-state Decrement [model message]
+  [(update model :counter dec) nil])
+
+(defmethod update-state SetCounter [model message]
+  [(assoc model :counter (:value message)) nil])
+
+(defmethod update-state GenerateRandom [model message]
+  [model (->Random 50 ->SetCounter)])
+
+(defmethod update-state Type [model message]
+  [(assoc model :text (:text message)) nil])
+
+(defmethod update-state :default [model message]
+  [model nil])
 
 ;; --- View ------------------------------------------------
 
@@ -62,4 +63,4 @@
 
 (def root (.getElementById js/document "app"))
 
-(main model view update root)
+(main model view update-state root)
