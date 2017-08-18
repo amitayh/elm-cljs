@@ -1,10 +1,13 @@
 # elm-cljs
 
-FIXME: Write a one-line description of your library/project.
+Attempting to implement [The Elm Architecture](https://guide.elm-lang.org/architecture/)™ in ClojureScript
 
 ## Overview
 
-FIXME: Write a paragraph about the library/project and highlight its goals.
+[app.cljs](src/elm_cljs/app.cljs) contains an example app, written in a purely-functional manner.
+All side effects (for example, generating random values or fetching data from a remote endpoint)
+are handled by dispatching effects which run outside your program, and report back using messages
+on `core.async` channels
 
 ## Setup
 
