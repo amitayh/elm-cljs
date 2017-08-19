@@ -1,7 +1,6 @@
 (ns elm-cljs.app
-  (:require [elm-cljs.core :refer [main submit]]
-            [elm-cljs.effects :refer [->Random ->Fetch]]
-            [quiescent.dom :as d]))
+  (:require [elm-cljs.core :refer [main]]
+            [elm-cljs.effects :refer [->Random ->Fetch]]))
 
 (enable-console-print!)
 
@@ -58,7 +57,7 @@
 
 ;; --- View ------------------------------------------------
 
-(defn view- [model]
+(defn view [model]
   [:div {}
    [:p {}
     [:button {:onClick ->Decrement} "-"]
@@ -71,19 +70,6 @@
    [:p {}
     [:input {:onChange (fn [e] (->SetText (-> e .-target .-value)))
              :value (:text model)}]]])
-
-(defn view [model]
-  (d/div {}
-         (d/p {}
-              (d/button {:onClick (fn [e] (submit (->Decrement)))} "-")
-              (:counter model)
-              (d/button {:onClick (fn [e] (submit (->Increment)))} "+"))
-         (d/p {} (d/button {:onClick (fn [e] (submit (->GenerateRandom)))} "Random"))
-         (d/p {} (d/button {:onClick (fn [e] (submit (->FetchData)))} "Fetch data"))
-         (if (:loading model) (d/h1 {} "Loading..."))
-         (d/p {}
-              (d/input {:onChange (fn [e] (submit (->SetText (-> e .-target .-value))))
-                        :value    (:text model)}))))
 
 ;; --- Main ------------------------------------------------
 

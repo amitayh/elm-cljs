@@ -11,7 +11,8 @@
                  [org.clojure/core.async  "0.3.443"
                   :exclusions [org.clojure/tools.reader]]
 
-                 [quiescent "0.2.0-alpha1"]]
+                 [cljsjs/react "16.0.0-beta.2-0"]
+                 [cljsjs/react-dom "16.0.0-beta.2-0"]]
 
   :plugins [[lein-figwheel "0.5.12"]
             [lein-cljsbuild "1.1.7" :exclusions [[org.clojure/clojure]]]]
