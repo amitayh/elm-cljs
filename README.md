@@ -2,6 +2,8 @@
 
 Attempting to implement [The Elm Architecture](https://guide.elm-lang.org/architecture/)™ in ClojureScript
 
+[Demo here](https://amitayh.github.io/elm-cljs/)
+
 ## Overview
 
 [app.cljs](src/elm_cljs/app.cljs) contains an example app, written in a purely-functional manner.
@@ -55,7 +57,7 @@ function that will send the message to the `messages` channel.
 
 ### Effects
 
-Effects are designed to be extensible by defining an `Effect` protocol in [effects.cljs](src/elm_cljs/effects.cljs)
+Effects are designed to be extensible by defining an `Effect` protocol in [effects.cljs](src/elm_cljs/effects.cljs).
 You can see example of random number generation and fake HTTP call. It leverages `core.async` to handle
 the async flow. This file also includes the code that continuously reads the next effect to perform from
 the `effects` channel and runs it.
