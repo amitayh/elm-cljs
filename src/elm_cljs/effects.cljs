@@ -9,8 +9,7 @@
 (defrecord Random [max callback]
   Effect
   (run [this messages effects]
-    (go
-      (>! messages ((:callback this) (rand-int 100))))))
+    (go (>! messages ((:callback this) (rand-int max))))))
 
 (defn- rand-str [len]
   (apply str (take len (repeatedly #(char (+ (rand 26) 65))))))

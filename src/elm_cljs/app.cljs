@@ -8,22 +8,16 @@
 
 (def model {:counter 0
             :loading false
-            :text "???"})
+            :text "World"})
 
 ;; --- Messages ------------------------------------------------
 
 (defrecord Increment [])
-
 (defrecord Decrement [])
-
 (defrecord SetCounter [value])
-
 (defrecord GenerateRandom [])
-
 (defrecord FetchData [])
-
 (defrecord DataFetched [value])
-
 (defrecord SetText [text])
 
 ;; --- Update ------------------------------------------------
@@ -59,20 +53,23 @@
 
 (defn view [model]
   [:div {}
-   [:p {}
-    [:button {:onClick ->Decrement} "-"]
-    (:counter model)
-    [:button {:onClick ->Increment} "+"]]
-   [:p {}
-    [:button {:onClick ->GenerateRandom} "Random"]
-    [:button {:onClick ->FetchData} "FetchData"]]
-   (if (:loading model) [:h1 {} "Loading..."])
-   [:p {}
-    [:input {:onChange (fn [e] (->SetText (-> e .-target .-value)))
-             :value (:text model)}]]])
+    [:p {}
+      [:button {:onClick ->Decrement} "-"]
+      (:counter model)
+      [:button {:onClick ->Increment} "+"]]
+    [:p {}
+      [:button {:onClick ->GenerateRandom} "Random"]]
+    [:h2 {} "Hello " (:text model)]
+    [:p {}
+      [:input {:onChange (fn [e] (->SetText (-> e .-target .-value)))
+               :value (:text model)}]]
+    [:p {}
+      (if (:loading model)
+        "Loading..."
+        [:button {:onClick ->FetchData} "Fetch Data"])]])
 
 ;; --- Main ------------------------------------------------
 
-(def root (.getElementById js/document "app"))
+(def root (js/document.getElementById "app"))
 
 (main model view update-model root)

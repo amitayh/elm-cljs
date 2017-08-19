@@ -23,6 +23,8 @@
 (defn- to-props [props]
   (reduce props-reducer (js-obj) props))
 
+(declare to-react)
+
 (defn- create-element [[tag props & children]]
   (apply createElement (name tag) (to-props props) (map to-react children)))
 
