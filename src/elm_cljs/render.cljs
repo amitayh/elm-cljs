@@ -9,11 +9,14 @@
 (defn- callback? [key]
   (str/starts-with? (name key) "on"))
 
+(defn- wrap-callback [callback]
+  (fn [e]
+    (let [message (callback e)]
+      (go (>! messages message)))))
+
 (defn- to-prop [key value]
   (if (callback? key)
-    (fn [e]
-      (let [message (value e)]
-        (go (>! messages message))))
+    (wrap-callback value)
     value))
 
 (defn- props-reducer [acc [key value]]

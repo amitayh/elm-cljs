@@ -34,12 +34,12 @@ current model and the message - and should return a tuple of `[next-model effect
  * `effect` - if there's some side effect to be performed from this action - for example,
  making an HTTP call, requesting a random value etc. If we want our app to be purely functional
  all effects should be handled like this - making our app a few immutable data structures and
- pure functions. In no effect is needed for our action, we can return `nil`
+ pure functions. If no effect is needed for our action, we can return `nil`
 
 Note that every event handler in our view if just a function returning some message. We do not
 modify the app state directly.
 
-Both effects and messages are being conveyed on [core.async](https://github.com/clojure/core.async)
+Both effects and messages are being conveyed on [core.async](https://github.com/clojure/core.async) channels.
 
 ### Main
 
