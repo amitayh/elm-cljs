@@ -24,7 +24,7 @@ The example app in [app.cljs](src/elm_cljs/app.cljs) contains the same parts - t
 a simple map representing your app's state (a counter and some text to display).
 
 Updates are being applied using messages, each representing some action to perform. These
-messages can come wither from user interactions (such as button clicks and other inputs),
+messages can come either from user interactions (such as button clicks and other inputs),
 or from the outside world (like HTTP calls or web sockets)
 
 The update function is a multimethod dispatching on the type of the message. It receives the
